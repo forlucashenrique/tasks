@@ -35,12 +35,7 @@ class StoreTaskRequest extends FormRequest
     {
         throw new ValidationException(
             $validator,
-
             $this->error('Task not Created', 422, $validator->errors()),
-            // response()->json([
-            //     'message' => 'Validation failed',
-            //     'errors' => $validator->errors()
-            // ], 422)
         );
     }
 }
