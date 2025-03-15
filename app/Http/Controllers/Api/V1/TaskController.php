@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Resources\V1\TaskResource;
 use App\Models\Task;
 use App\Traits\HttpResponses;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -36,10 +37,11 @@ class TaskController extends Controller
             $resource_data = new TaskResource($created->load('user'));
 
             return $this->response('Task Created', 201, $resource_data);
-        } catch (ValidationException $error) {
-
-            $errors = $request->errors();
-            return $this->error('Task not created', 400, $error->errors());
+        } catch (Exception $error) {
+            return response()->json([
+                'message' => 'An error occurred while creating the invoice.',
+                'error' => $error->getMessage()
+            ], 500);
         }
     }
 
