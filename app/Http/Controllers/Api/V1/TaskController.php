@@ -9,6 +9,7 @@ use App\Models\Task;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class TaskController extends Controller
 {
@@ -29,12 +30,16 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         try {
-            $created = Task::create($request->validated());
+            $isValidFields = $request->validated();
+
+            $created = Task::create($isValidFields);
             $resource_data = new TaskResource($created->load('user'));
 
             return $this->response('Task Created', 201, $resource_data);
-        } catch (\Exception $error) {
-            return response()->json('taaa', 400, []);
+        } catch (ValidationException $error) {
+
+            $errors = $request->errors();
+            return $this->error('Task not created', 400, $error->errors());
         }
     }
 
