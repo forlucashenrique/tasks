@@ -14,7 +14,7 @@ trait HttpResponses
             'message' => $message,
             'status' => $status,
             'data' => $data,
-        ], $status);
+        ], $status, [], JSON_UNESCAPED_SLASHES);
     }
 
     public function error(string $message, string|int $status, array|MessageBag $errors)
@@ -23,6 +23,6 @@ trait HttpResponses
             'message' => $message,
             'status' => $status,
             'errors' => $errors,
-        ], $status);
+        ], $status, [], JSON_UNESCAPED_SLASHES);
     }
 }

@@ -27,6 +27,7 @@ class TaskResource extends JsonResource
             'finished_date_limit' => $this->finished_date_limit,
             'time_to_finished' => $this->time_to_finish > 0 ? $this->time_to_finish : null,
             'status' => $this->status,
+            'finished_date' => $this->finished_date,
         ];
     }
 }
