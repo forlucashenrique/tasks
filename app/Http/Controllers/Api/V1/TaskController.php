@@ -15,7 +15,12 @@ class TaskController extends Controller
     public function index()
     {
 
-        return TaskResource::collection(Task::with('user')->get());
+        return response()->json(
+            TaskResource::collection(Task::with('user')->get()),
+            200,
+            [],
+            JSON_UNESCAPED_SLASHES,
+        );
     }
 
     /**
