@@ -20,14 +20,12 @@ class TaskFactory extends Factory
 
         $user = User::all()->random();
 
-        echo $user;
-
         return [
             'user_id' => $user->id,
             'title' => $this->faker->realText(15, 1),
             'description' => $this->faker->realText(200, 2),
-            'owner' => $user->name,
-            'end_date' => $this->faker->dateTimeThisMonth(),
+            'finish_date_limit' => $this->faker->dateTimeThisMonth(),
+            'finished_date' => $this->faker->dateTimeThisMonth(),
             'excluded_date' => null,
             'finished' => $this->faker->boolean(),
         ];

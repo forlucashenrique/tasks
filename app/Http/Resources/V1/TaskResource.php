@@ -17,6 +17,7 @@ class TaskResource extends JsonResource
     {
         $user = new UserResource($this->user);
 
+        echo "Tentando {$this->finished_date}";
 
         return [
             'id' => $this->id,
@@ -26,6 +27,8 @@ class TaskResource extends JsonResource
             'finished' => !!$this->finished,
             'created_date' => $this->created_at_formatted,
             'finished_date_limit' => $this->finished_date_limit,
+            'time_to_finished' => $this->time_to_finish > 0 ? $this->time_to_finish : null,
+            'status' => $this->status,
         ];
     }
 }
