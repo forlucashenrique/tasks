@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Resources\V1\TaskResource;
 use App\Models\Task;
+use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
+    use HttpResponses;
+
     public function index()
     {
 
@@ -29,11 +32,9 @@ class TaskController extends Controller
             $created = Task::create($request->validated());
             $resource_data = new TaskResource($created->load('user'));
 
-            return $resource_data;
+            return $this->response('Task Created', 201, $resource_data);
         } catch (\Exception $error) {
-            Log::error('Invoice not created ' . $error->getMessage());
-
-            return [];
+            return response()->json('taaa', 400, []);
         }
     }
 
