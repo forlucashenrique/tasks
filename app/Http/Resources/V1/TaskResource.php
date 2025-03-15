@@ -17,8 +17,6 @@ class TaskResource extends JsonResource
     {
         $user = new UserResource($this->user);
 
-        echo "Tentando {$this->finished_date}";
-
         return [
             'id' => $this->id,
             'title' => $this->title,
