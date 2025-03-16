@@ -17,7 +17,7 @@ class TaskController extends Controller
 {
     use HttpResponses;
 
-    public function index(Request $request)
+    public function index()
     {
 
         $user = Auth::user();
