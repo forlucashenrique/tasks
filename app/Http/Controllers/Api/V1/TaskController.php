@@ -11,18 +11,21 @@ use App\Traits\HttpResponses;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
     use HttpResponses;
 
-    public function index()
+    public function index(Request $request)
     {
 
+        $user = Auth::user();
+
         try {
-            $tasks = TaskResource::collection(Task::with('user')->whereNull('excluded_date')->get());
+            $tasks = TaskResource::collection(
+                Task::all()->where('user_id', $user->id)->whereNull('excluded_date')
+            );
             return $this->response('success', 200, $tasks);
         } catch (Exception $error) {
             return $this->response('error', 400, [$error]);
@@ -33,26 +36,46 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         try {
+
+            $user = Auth::user();
+
             $validFields = $request->validated();
 
-            $created = Task::create($validFields);
+            $fields = [
+                'user_id' => $user->id,
+                'title' => $validFields['title'],
+                'description' => $validFields['description'],
+                'finish_date_limit' => $validFields['finish_date_limit'],
+            ];
+
+            $created = Task::create($fields);
             $resource_data = new TaskResource($created->load('user'));
 
             return $this->response('success', 201, $resource_data);
         } catch (Exception $error) {
             return response()->json([
-                'message' => 'An error occurred while creating the invoice.',
+                'message' => 'An error occurred while creating the task.',
                 'error' => $error->getMessage()
             ], 500);
         }
     }
 
 
+
     public function show(string $id)
     {
         try {
-            $task = new TaskResource(Task::where('id', $id)->first());
-            return $this->response('success', 200, $task);
+
+            $user = Auth::user();
+            $task = Task::findOrFail($id);
+
+            if ($task->user_id !== $user->id) {
+                return $this->response('You do not have permission', 403, []);
+            }
+
+            $resource_data =  new TaskResource($task);
+
+            return $this->response('success', 200, $resource_data);
         } catch (Exception $error) {
             return $this->response('error', 400, [$error]);
         }
@@ -62,6 +85,13 @@ class TaskController extends Controller
     public function update(UpdateTaskRequest $request, Task $task)
     {
         try {
+
+            $user = Auth::user();
+
+            if ($task->user_id !== $user->id) {
+                return $this->response('You do not have permission', 403, []);
+            }
+
             $validFields = $request->validated();
 
             $isUpdated = $task->update([
@@ -89,6 +119,13 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         try {
+
+            $user = Auth::user();
+
+            if ($task->user_id !== $user->id) {
+                return $this->response('You do not have permission', 403, []);
+            }
+
             $isDeleted = $task->update([
                 'excluded_date' => Carbon::now(),
             ]);
