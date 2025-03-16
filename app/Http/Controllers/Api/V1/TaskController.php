@@ -109,7 +109,7 @@ class TaskController extends Controller
             return $this->response('success', 200, $resource_data);
         } catch (Exception $error) {
             return response()->json([
-                'message' => 'An error occurred while creating the invoice.',
+                'message' => 'An error occurred while creating the task.',
                 'error' => $error->getMessage()
             ], 500);
         }
