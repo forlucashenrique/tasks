@@ -17,15 +17,26 @@ class TaskController extends Controller
 {
     use HttpResponses;
 
-    public function index()
+    public function index(Request $request)
     {
 
         $user = Auth::user();
 
+        $status_arr = [
+            'pending' => 0,
+            'done' => 1,
+        ];
+
         try {
-            $tasks = TaskResource::collection(
-                Task::all()->where('user_id', $user->id)->whereNull('excluded_date')
-            );
+
+            $status = $request->query('status');
+            $tasksTemp = Task::where('user_id', $user->id)->whereNull('excluded_date');
+
+            if (!is_null($status)) {
+                $tasksTemp->where('finished', $status_arr[$status]);
+            }
+
+            $tasks = TaskResource::collection($tasksTemp->get());
             return $this->response('success', 200, $tasks);
         } catch (Exception $error) {
             return $this->response('error', 400, [$error]);

@@ -28,12 +28,12 @@ class Task extends Model
 
     public function getCreatedAtFormattedAttribute()
     {
-        return Carbon::parse($this->created_at)->format('d/m/Y H:i:s');
+        return Carbon::parse($this->created_at)->format('Y-m-d');
     }
 
     public function getFinishedDateLimitAttribute()
     {
-        return Carbon::parse($this->finish_date_limit)->format('d/m/Y');
+        return Carbon::parse($this->finish_date_limit)->format('Y-m-d');
     }
 
     public function getTimeToFinishAttribute()
