@@ -7,11 +7,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/user', [UserController::class, 'store']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/', function () {
-    return response()->json([
-        "message" => 'All its OK!',
-    ]);
-});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tasks', [TaskController::class, 'index']);
