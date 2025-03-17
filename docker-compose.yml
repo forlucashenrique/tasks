@@ -42,10 +42,10 @@ services:
     container_name: laravel_db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: {$DB_PASSWORD}
-      MYSQL_DATABASE: {$DB_DATABASE}
-      MYSQL_USER: {$DB_USERNAME}
-      MYSQL_PASSWORD: {$DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE:-laravel}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-userpass}
+      MYSQL_USER: ${DB_USERNAME:-username}
     ports:
       - "3306:3306"
     volumes:
